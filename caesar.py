@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 import sys
 
+ALPHA_LEN = 26
+LOWER = ord("a")
+UPPER = ord("A")
+USAGE = "usage: ./caesar -e text -k 15 (-d for decryption)"
+
 
 def encrypt(plaintext, key):
     encrypted = ""
     for c in plaintext:
         if c.isalpha():
             if c.islower():
-                c = chr((ord(c) - 97 + key) % 26 + 97)
+                c = chr((ord(c) - LOWER + key) % ALPHA_LEN + LOWER)
             else:
-                c = chr((ord(c) - 65 + key) % 26 + 65)
+                c = chr((ord(c) - UPPER + key) % ALPHA_LEN + UPPER)
         encrypted += c
     return encrypted
 
@@ -19,26 +24,28 @@ def decrypt(ciphertext, key):
     for c in ciphertext:
         if c.isalpha():
             if c.islower():
-                c = chr((ord(c) - 97 + 26 - key) % 26 + 97)
+                c = chr((ord(c) - LOWER + ALPHA_LEN - key) % ALPHA_LEN + LOWER)
             else:
-                c = chr((ord(c) - 65 + 26 - key) % 26 + 65)
+                c = chr((ord(c) - UPPER + ALPHA_LEN - key) % ALPHA_LEN + UPPER)
         decrypted += c
     return decrypted
 
 
-usage = "usage: ./caesar -e text -k 15 (-d for decryption)"
 if len(sys.argv) != 5:
-    sys.exit(usage)
+    sys.exit(USAGE)
 if "-e" not in sys.argv and "-d" not in sys.argv or "-k" not in sys.argv:
-    sys.exit(usage)
+    sys.exit(USAGE)
 
+# make sure we get an integer
 key = sys.argv[sys.argv.index("-k") + 1]
 try:
     key = int(key)
 except ValueError:
     sys.exit("the key must be an integer")
 
-key = (key % 26 + 26) % 26  # the key will always be 0-25
+# the key will always be in range 0-25
+key %= ALPHA_LEN
+
 if "-e" in sys.argv:
     print(encrypt(sys.argv[sys.argv.index("-e") + 1], key))
 else:
