@@ -4,7 +4,7 @@ import sys
 ALPHA_LEN = 26
 LOWER = ord("a")
 UPPER = ord("A")
-USAGE = "usage: ./caesar -e text -k 15 (-d for decryption)"
+USAGE = "usage: python3 caesar.py -e text -k 15 (-d for decryption)"
 
 
 def encrypt(plaintext, key):
